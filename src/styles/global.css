@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles */
+html, body {
+  scroll-behavior: smooth;
+}
+
+/* Add any other global styles here */
