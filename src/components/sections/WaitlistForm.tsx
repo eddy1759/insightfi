@@ -46,35 +46,16 @@ const WaitlistForm = () => {
     
     try {
       // In development mode, simulate success
-      if (import.meta.env.DEV) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setSuccess(true);
-        setEmail('');
-        setIsLoading(false);
-        return;
-      }
+      // if (import.meta.env.DEV) {
+      //   await new Promise(resolve => setTimeout(resolve, 1000));
+      //   setSuccess(true);
+      //   setEmail('');
+      //   setIsLoading(false);
+      //   return;
+      // }
       
-      // Mailchimp API integration
-      const MAILCHIMP_URL = import.meta.env.VITE_MAILCHIMP_URL;
-      const MAILCHIMP_API_KEY = import.meta.env.VITE_MAILCHIMP_API_KEY;
-      
-      if (!MAILCHIMP_URL || !MAILCHIMP_API_KEY) {
-        throw new Error('Mailchimp configuration not found');
-      }
-      
-      await axios.post(
-        MAILCHIMP_URL,
-        { 
-          email_address: email,
-          status: 'subscribed'
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `apikey ${MAILCHIMP_API_KEY}`
-          }
-        }
-      );
+      // Call your Vercel serverless function
+      await axios.post('/api/subscribe', { email });
       
       setSuccess(true);
       setEmail('');
@@ -88,21 +69,20 @@ const WaitlistForm = () => {
         });
       }
     } catch (err) {
-      // Handle the case where user is already subscribed
-      if (axios.isAxiosError(err) && err.response?.data?.title?.includes('already a list member')) {
+      if (axios.isAxiosError(err) && err.response?.data?.message?.includes('already subscribed')) {
         setSuccess(true);
         setEmail('');
       } else {
         setError(
           axios.isAxiosError(err) 
-            ? err.response?.data?.title || 'Failed to join waitlist' 
+            ? err.response?.data?.error || 'Failed to join waitlist' 
             : 'Something went wrong. Please try again.'
         );
       }
     } finally {
       setIsLoading(false);
     }
-  };
+  }
   
   const handleCloseSnackbar = () => {
     setSuccess(false);
