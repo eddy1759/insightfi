@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['insight.svg', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'InsightFi',
         short_name: 'InsightFi',
