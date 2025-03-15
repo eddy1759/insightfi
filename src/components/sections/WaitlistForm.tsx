@@ -45,17 +45,9 @@ const WaitlistForm = () => {
     setError('');
     
     try {
-      // In development mode, simulate success
-      // if (import.meta.env.DEV) {
-      //   await new Promise(resolve => setTimeout(resolve, 1000));
-      //   setSuccess(true);
-      //   setEmail('');
-      //   setIsLoading(false);
-      //   return;
-      // }
       
       // Call your Vercel serverless function
-      await axios.post('/api/subscribe', { email });
+      await axios.post('https://insightfi.vercel.app/api/subscribe', { email });
       
       setSuccess(true);
       setEmail('');
