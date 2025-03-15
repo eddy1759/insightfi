@@ -62,7 +62,7 @@ const WaitlistForm = () => {
         throw new Error('Mailchimp configuration not found');
       }
       
-      const response = await axios.post(
+      await axios.post(
         MAILCHIMP_URL,
         { 
           email_address: email,

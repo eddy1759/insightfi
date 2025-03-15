@@ -11,7 +11,7 @@ interface MainLayoutProps {
   children?: ReactNode;
 }
 
-const MainLayout = ({ children }: MainLayoutProps) => {
+const MainLayout = ({ }: MainLayoutProps) => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {

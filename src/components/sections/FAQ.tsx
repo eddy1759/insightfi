@@ -6,26 +6,21 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Grid,
-  TextField,
-  InputAdornment,
-  Chip,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SearchIcon from '@mui/icons-material/Search';
 import SecurityIcon from '@mui/icons-material/Security';
 import PaymentIcon from '@mui/icons-material/Payment';
 import HelpIcon from '@mui/icons-material/Help';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const faqCategories = {
-  all: "All Questions",
-  product: "Product Info",
-  security: "Security & Privacy",
-  pricing: "Pricing & Plans",
-  technical: "Technical Details"
-};
+// const faqCategories = {
+//   all: "All Questions",
+//   product: "Product Info",
+//   security: "Security & Privacy",
+//   pricing: "Pricing & Plans",
+//   technical: "Technical Details"
+// };
 
 interface FAQItem {
   question: string;
@@ -80,20 +75,20 @@ const FAQ = () => {
     (event: React.SyntheticEvent, isExpanded: boolean): void;
   }
 
-  const handleChange = (panel: string): AccordionChangeHandler => (event: React.SyntheticEvent, isExpanded: boolean) => {
+  const handleChange = (panel: string): AccordionChangeHandler => (_event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setSearchTerm(event.target.value);
-  };
+  // const handleSearch = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //   setSearchTerm(event.target.value);
+  // };
 
-  type FAQCategory = 'all' | 'product' | 'security' | 'pricing' | 'technical';
+  // type FAQCategory = 'all' | 'product' | 'security' | 'pricing' | 'technical';
 
-  const handleCategoryFilter = (category: FAQCategory) => {
-    setActiveCategory(category);
-    setExpanded(false);
-  };
+  // const handleCategoryFilter = (category: FAQCategory) => {
+  //   setActiveCategory(category);
+  //   setExpanded(false);
+  // };
 
   useEffect(() => {
     let filtered = faqItems;
