@@ -1,7 +1,5 @@
-// api/subscribe.js
 import { google } from 'googleapis';
 
-// Use ES Module export syntax instead of CommonJS
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -14,8 +12,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Decode the Base64 service account key
+    const serviceAccountKey = Buffer.from(
+      process.env.GOOGLE_SERVICE_ACCOUNT_KEY_BASE64,
+      'base64'
+    ).toString();
+    
+    const credentials = JSON.parse(serviceAccountKey);
+    
     const auth = new google.auth.GoogleAuth({
-      credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY),
+      credentials,
       scopes: ['https://www.googleapis.com/auth/spreadsheets']
     });
 
@@ -23,6 +29,7 @@ export default async function handler(req, res) {
     const spreadsheetId = process.env.GOOGLE_SHEET_ID;
     const sheetName = 'Waitlist';
 
+    // Rest of your code remains the same
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: `${sheetName}!A:A`,
