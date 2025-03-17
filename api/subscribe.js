@@ -1,6 +1,8 @@
-import google from 'googleapis';
+// api/subscribe.js
+import { google } from 'googleapis';
 
-module.exports = async (req, res) => {
+// Use ES Module export syntax instead of CommonJS
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -57,4 +59,4 @@ module.exports = async (req, res) => {
       error: 'Failed to add email to waitlist' 
     });
   }
-};
+}
