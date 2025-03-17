@@ -1,8 +1,6 @@
-// api/subscribe.js (not TypeScript)
-const axios = require('axios');
+const { google } = require('googleapis');
 
 module.exports = async (req, res) => {
-  // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -14,35 +12,49 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
-    const MAILCHIMP_LIST_ID = process.env.MAILCHIMP_LIST_ID;
-    const MAILCHIMP_SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX;
+    const auth = new google.auth.GoogleAuth({
+      credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY),
+      scopes: ['https://www.googleapis.com/auth/spreadsheets']
+    });
 
-    await axios.post(
-      `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_LIST_ID}/members`,
-      {
-        email_address: email,
-        status: 'subscribed'
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `apikey ${MAILCHIMP_API_KEY}`
-        }
+    const sheets = google.sheets({ version: 'v4', auth });
+    const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+    const sheetName = 'Waitlist';
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: `${sheetName}!A:A`,
+    });
+
+    const existingEmails = response.data.values || [];
+    const emailExists = existingEmails.flat().includes(email);
+
+    if (emailExists) {
+      return res.status(200).json({ 
+        success: true, 
+        message: 'already subscribed' 
+      });
+    }
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: `${sheetName}!A:B`,
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      resource: {
+        values: [[
+          email, 
+          new Date().toISOString()
+        ]]
       }
-    );
+    });
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.error('Mailchimp error:', error.response?.data || error.message);
-    
-    // Handle case where subscriber already exists
-    if (error.response?.data?.title?.includes('already a list member')) {
-      return res.status(200).json({ success: true, message: 'already subscribed' });
-    }
+    console.error('Google Sheets error:', error);
     
     return res.status(500).json({ 
-      error: error.response?.data?.title || 'Failed to subscribe' 
+      error: 'Failed to add email to waitlist' 
     });
   }
 };
