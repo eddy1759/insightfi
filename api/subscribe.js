@@ -1,4 +1,4 @@
-const { google } = require('googleapis');
+import google from 'googleapis';
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
